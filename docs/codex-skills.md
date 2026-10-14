@@ -6,7 +6,7 @@ Codex는 시작 작업 디렉터리(CWD)에서 Git 저장소 루트까지 각 �
 `.agents/skills`를 검색하며, Skill 디렉터리의 심볼릭 링크도 지원합니다.
 저장소의 `.codex/skills` 연결만으로 공식 검색 경로 등록을 대신하지 않습니다.
 
-이 저장소는 원본 파일을 복사하거나 수정하지 않고 다음 상대 경로 연결을 제공합니다.
+이 저장소는 원본 Skill 디렉터리를 복사하지 않고 다음 상대 경로 연결을 제공합니다.
 
 ```text
 .agents/skills/paper2assets -> ../../ResearchStudio-Reel/skills/paper2assets
@@ -16,22 +16,16 @@ Codex는 시작 작업 디렉터리(CWD)에서 Git 저장소 루트까지 각 �
 상대 경로와 Git에 저장된 연결을 사용하므로 저장소를 다른 위치에 체크아웃해도
 동일한 저장소 구조에서는 연결이 유지됩니다. 기존 `.codex/skills`는 보존합니다.
 
-## 메타데이터 검증에서 발견한 제한
+## 메타데이터 검증
 
 - `paper2poster`: name 일치, description 705자, YAML front matter 파싱 정상.
-- `paper2assets`: name 일치, description 965자, 파일 경로와 연결은 정상이나 원본
-  YAML front matter 파싱 실패. 따옴표 없는 description 안의
-  `assets/meta/metadata.json: title`에서 콜론 뒤 공백이 YAML 구문으로 해석됩니다.
-  정상 YAML을 요구하는 검색기에서는 Skill을 읽지 못할 수 있습니다.
+- `paper2assets`: name 일치, description 965자, YAML front matter 파싱 정상.
+  description은 `description: >-` 블록 문자열로 지정합니다. 기존 단일 행에서는
+  `assets/meta/metadata.json: title`의 콜론 뒤 공백이 YAML 구문 오류를 일으켰습니다.
+  파싱된 description은 원래 텍스트와 정확히 같으며 Skill 본문과 실행 코드는 그대로입니다.
 
-이번 변경은 원본 SKILL.md를 수정하지 않는 조건으로 수행했습니다. 따라서 연결 구성은
-완료했으나 두 Skill 모두의 자동 인식 완료를 보장하지 않습니다. Paper2Assets의
-메타데이터를 수정할 수 있게 되면 description을 YAML 블록 문자열(`description: >-`)이나
-적절히 이스케이프한 따옴표 문자열로 바꾸고 다시 파싱 검증해야 합니다.
-description 안에 큰따옴표도 있으므로 단순히 큰따옴표만 덧붙이지 마세요.
-
-현재 세션의 실행 환경 Skill 조회는 연결 추가 후에도 빈 목록을 반환했습니다.
-새 세션의 실제 검색 결과를 아래 절차로 확인해야 합니다.
+파일 연결과 YAML 검증은 통과했지만 현재 세션의 자동 Skill 목록 갱신을 확인한 것은
+아닙니다. 새 세션의 실제 검색 결과를 아래 절차로 확인해야 합니다.
 
 ## 새 클라우드 작업에서 확인
 
